@@ -1,35 +1,35 @@
-version: '3.8'
+version: '3.8'  # Docker Compose file version
 
 services:
-  web:
-    build: .
+  web:  # Flask application service
+    build: .  # Build from current directory's Dockerfile
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Expose port 5000
     environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/user_management
+      - FLASK_APP=app.py  # Flask application entry point
+      - FLASK_ENV=development  # Development environment
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/user_management  # Database connection URL
     volumes:
-      - .:/app
+      - .:/app  # Mount current directory to /app in container
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy  # Wait for database to be healthy
 
-  db:
-    image: postgres:15
+  db:  # PostgreSQL database service
+    image: postgres:15  # Use PostgreSQL 15
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=user_management
+      - POSTGRES_USER=postgres  # Database username
+      - POSTGRES_PASSWORD=postgres  # Database password
+      - POSTGRES_DB=user_management  # Database name
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Expose port 5432
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U postgres"]  # Check if database is ready
+      interval: 5s  # Check every 5 seconds
+      timeout: 5s  # Timeout after 5 seconds
+      retries: 5  # Retry 5 times
 
 volumes:
-  postgres_data: 
+  postgres_data:  # Named volume for database persistence 
